@@ -1,10 +1,10 @@
 import java.util.Iterator;
 
-public class MyArrIterator<E> implements Iterator<E> {
+public class MyIterator<E> implements Iterator<E> {
     private int index = 0;
     private E[] values;
 
-    public MyArrIterator(E[] values) {
+    public MyIterator(E[] values) {
         this.values = values;
     }
 
