@@ -6,3 +6,15 @@
 все элементы указанной коллекции, очистить коллекцию и вернуть количество элементов в коллекции.
 Каждая коллекция должна реализовывать интерфейс Iterable и создавать свою реализацию итератора.
 Классы должны быть покрыты юнит тестами. В конце необходимо провести сравнение двух структур
+V add(E e)
+V add(int index, E element)
+V addAll(Collections<? extends E>)
+V addAll(Collections<int index, ? extends E>)
+V remove(int index)
+V remove(Object o)
+V removeAll(Collection<?> c)
+V clear()
+V size()
+V iterator()
+
+

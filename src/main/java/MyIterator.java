@@ -2,19 +2,23 @@ import java.util.Iterator;
 
 public class MyIterator<E> implements Iterator<E> {
     private int index = 0;
-    private E[] values;
+    private E[] elements;
+    private int size;
 
-    public MyIterator(E[] values) {
-        this.values = values;
+
+    public MyIterator(E[] elements, int size) {
+        this.elements = elements;
+        this.size = size;
     }
 
     @Override
     public boolean hasNext() {
-        return index<values.length;
+
+            return index < size;
     }
 
     @Override
     public E next() {
-        return values[index++];
+        return elements[index++];
     }
 }
