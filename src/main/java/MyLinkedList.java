@@ -6,16 +6,16 @@
 //все элементы указанной коллекции, очистить коллекцию и вернуть количество элементов в коллекции.
 //Каждая коллекция должна реализовывать интерфейс Iterable и создавать свою реализацию итератора.
 //Классы должны быть покрыты юнит тестами. В конце необходимо провести сравнение двух структур
-// add(E e)
-// add(int index, E element)
-// addAll(Collections<? extends E>)
-// addAll(Collections<int index, ? extends E>)
-// remove(int index)
+// V add(E e)
+// V add(int index, E element)
+// V addAll(Collections<? extends E>)
+// V addAll(Collections<int index, ? extends E>)
+// V remove(int index)
 // remove(Object o)
 // removeAll(Collection<?> c)
 // clear()
-// size()
-// iterator()
+// V size()
+// V iterator()
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,7 +31,7 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public boolean add(E e) {
-        linkLast(e);
+        addLast(e);
         return true;
     }
 
@@ -39,7 +39,7 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
     public void add(int index, E element) {
         if (index >= 0 && index <= this.size) {
             if (index == size) {
-                linkLast(element);
+                addLast(element);
             } else {
                 linkBefore(element, node(index));
             }
@@ -49,18 +49,74 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
     }
 
     @Override
-    public boolean addAll(Collection collection) {
-        return false;
+    public boolean addAll(Collection<? extends E> c) {
+        return addAll(size, c);
     }
 
-    @Override
-    public boolean addAll(int index, Collection collection) {
-        return false;
+    public boolean addAll(int index, Collection<? extends E> c) {
+        if (index >= 0 && index <= size) {
+            int sizeOfCollection = c.size();
+            if (sizeOfCollection == 0) {
+                return false;
+            } else {
+                Node<E> leftNode;
+                Node<E> rightNode;
+                if (index == size) {
+                    rightNode = null;
+                    leftNode = last;
+                } else {
+                    rightNode = node(index);
+                    leftNode = rightNode.prev;
+                }
+                for (E elem : c) {
+                    Node<E> newNode = new Node<>(leftNode, elem, null);
+                    if (leftNode == null) {
+                        first = newNode;
+                    } else {
+                        leftNode.next = newNode;
+                    }
+                    leftNode = newNode;
+                }
+                if (rightNode == null) {
+                    last = leftNode;
+                } else {
+                    leftNode.next = rightNode;
+                    rightNode.prev = leftNode;
+                }
+                size += sizeOfCollection;
+                return true;
+            }
+        } else {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
     }
 
     @Override
     public E remove(int index) {
-        return null;
+        if (index >= 0 && index <= size) {
+            Node<E> removableElement = node(index);
+            E e = removableElement.element;
+            Node<E> next = removableElement.next;
+            Node<E> prev = removableElement.prev;
+            if (prev == null) {
+                first = next;
+            } else {
+                prev.next = next;
+                removableElement.prev = null;
+            }
+            if (next == null) {
+                last = prev;
+            } else {
+                next.prev = prev;
+                removableElement.next = null;
+            }
+
+            removableElement.element = null;
+            size--;
+            return e;
+        } else {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
     }
 
     @Override
@@ -116,21 +172,21 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
         return node;
     }
 
-    private void linkFirst(E e) {
+    private void addFirst(E e) {
         Node<E> firstTemp = first;
-        Node<E> newNode = new Node<>(null, e, firstTemp); //новый узел, ссылка prev -> null, вставляемый текущий элемент e, ссылка на next -> бывшийFirst
+        Node<E> newNode = new Node<>(null, e, firstTemp);
         first = newNode;
-        if (firstTemp == null) { //если первый узел null,
-            last = newNode;//присваиваем новый узел last-у
+        if (firstTemp == null) {
+            last = newNode;
         } else {
             firstTemp.prev = newNode;
         }
         size++;
     }
 
-    void linkLast(E e) {
+    void addLast(E e) {
         Node<E> oldLast = last;
-        Node<E> newNode = new Node<>(oldLast, e, null);//новый узел, ссылка prev -> на бывший узелLast, вставляемый текущий элемент e, ссылка на next -> null
+        Node<E> newNode = new Node<>(oldLast, e, null);
         last = newNode;
         if (oldLast == null) {
             first = newNode;
@@ -159,7 +215,14 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] result = new Object[size];
+        int i = 0;
+
+        for (Node x = first; x != null; x = x.next) {
+            result[i++] = x.element;
+        }
+
+        return result;
     }
 
     @Override
