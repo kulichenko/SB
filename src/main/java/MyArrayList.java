@@ -15,8 +15,10 @@
 //V clear()
 //V size()
 //V iterator()
+
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Myself ArrayList implementation
@@ -36,10 +38,13 @@ public class MyArrayList<E> implements MyList<E> {
      */
     @Override
     public boolean add(E e) {
+//        if (size == elements.length) {
+//            E[] tempArray = elements;
+//            elements = (E[]) new Object[tempArray.length * 3 / 2 + 1];
+//            System.arraycopy(tempArray, 0, elements, 0, tempArray.length);
+//        }
         if (size == elements.length) {
-            E[] tempArray = elements;
-            elements = (E[]) new Object[tempArray.length * 3 / 2 + 1];
-            System.arraycopy(tempArray, 0, elements, 0, tempArray.length);
+            upLengthOfArray();
         }
         elements[size++] = e;
         return true;
@@ -51,9 +56,7 @@ public class MyArrayList<E> implements MyList<E> {
     @Override
     public void add(int index, E element) {
         if (size == elements.length) {
-            E[] tempArray = elements;
-            elements = (E[]) new Object[tempArray.length * 3 / 2 + 1];
-            System.arraycopy(tempArray, 0, elements, 0, tempArray.length);
+            upLengthOfArray();
         }
         E[] tempArray1 = Arrays.copyOf(elements, index);
         E[] tempArray2 = Arrays.copyOfRange(elements, index, size);
@@ -72,9 +75,7 @@ public class MyArrayList<E> implements MyList<E> {
     public boolean addAll(Collection<? extends E> collection) {
         for (E c : collection) {
             if (size == elements.length) {
-                E[] tempArray = elements;
-                elements = (E[]) new Object[tempArray.length * 3 / 2 + 1];
-                System.arraycopy(tempArray, 0, elements, 0, tempArray.length);
+                upLengthOfArray();
             }
             elements[size++] = c;
         }
@@ -90,9 +91,7 @@ public class MyArrayList<E> implements MyList<E> {
         E[] tempArray2 = Arrays.copyOfRange(elements, index, size);
         for (E c : collection) {
             if (size == elements.length) {
-                E[] tempArray = elements;
-                elements = (E[]) new Object[tempArray.length * 3 / 2 + 1];
-                System.arraycopy(tempArray, 0, elements, 0, tempArray.length);
+                upLengthOfArray();
             }
 
             elements[index] = c;
@@ -149,8 +148,8 @@ public class MyArrayList<E> implements MyList<E> {
     @Override
     public boolean removeAll(Collection<?> collection) {
         for (Object c : collection) {
-            for (E e: elements){
-                if (c.equals(e)){
+            for (E e : elements) {
+                if (c.equals(e)) {
                     remove(e);
                 }
             }
@@ -159,8 +158,21 @@ public class MyArrayList<E> implements MyList<E> {
     }
 
     @Override
-    public MyIterator<E> iterator() {
-        return new MyIterator<>(elements, size);
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+
+                return index < size;
+            }
+
+            @Override
+            public E next() {
+                return elements[index++];
+            }
+        };
     }
 
     @Override
@@ -226,5 +238,12 @@ public class MyArrayList<E> implements MyList<E> {
             sb.append(elements[i] + " ");
         }
         return "[" + sb.toString() + "]";
+    }
+
+    private boolean upLengthOfArray() {
+        E[] tempArray = elements;
+        elements = (E[]) new Object[tempArray.length * 3 / 2 + 1];
+        System.arraycopy(tempArray, 0, elements, 0, tempArray.length);
+        return true;
     }
 }
