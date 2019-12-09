@@ -14,6 +14,7 @@ public interface MyList<E> extends Collection<E>{
     boolean removeAll(Collection<?> collection);
     void clear();
     int size();
-    MyIterator<E> iterator();
+
+    Iterator<E> iterator();
 
 }
