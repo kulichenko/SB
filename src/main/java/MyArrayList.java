@@ -38,14 +38,7 @@ public class MyArrayList<E> implements MyList<E> {
      */
     @Override
     public boolean add(E e) {
-//        if (size == elements.length) {
-//            E[] tempArray = elements;
-//            elements = (E[]) new Object[tempArray.length * 3 / 2 + 1];
-//            System.arraycopy(tempArray, 0, elements, 0, tempArray.length);
-//        }
-        if (size == elements.length) {
-            upLengthOfArray();
-        }
+        upLengthOfArray();
         elements[size++] = e;
         return true;
     }
@@ -55,9 +48,7 @@ public class MyArrayList<E> implements MyList<E> {
      */
     @Override
     public void add(int index, E element) {
-        if (size == elements.length) {
             upLengthOfArray();
-        }
         E[] tempArray1 = Arrays.copyOf(elements, index);
         E[] tempArray2 = Arrays.copyOfRange(elements, index, size);
         elements[index] = element;
@@ -74,9 +65,7 @@ public class MyArrayList<E> implements MyList<E> {
     @Override
     public boolean addAll(Collection<? extends E> collection) {
         for (E c : collection) {
-            if (size == elements.length) {
                 upLengthOfArray();
-            }
             elements[size++] = c;
         }
         return true;
@@ -90,10 +79,7 @@ public class MyArrayList<E> implements MyList<E> {
         E[] tempArray1 = Arrays.copyOf(elements, index);
         E[] tempArray2 = Arrays.copyOfRange(elements, index, size);
         for (E c : collection) {
-            if (size == elements.length) {
                 upLengthOfArray();
-            }
-
             elements[index] = c;
             System.arraycopy(tempArray1, 0, elements, 0, tempArray1.length);
             System.arraycopy(tempArray2, 0, elements, index + 1, tempArray2.length);
@@ -124,8 +110,9 @@ public class MyArrayList<E> implements MyList<E> {
     @Override
     public boolean remove(Object o) {
         int index;
+
         for (int i = 0; i < elements.length; i++) {
-            if (elements[i] == o) {
+            if (elements[i].equals(o)) {
                 index = i;
                 E[] tempArray1 = Arrays.copyOf(elements, index);
                 E[] tempArray2 = Arrays.copyOfRange(elements, index + 1, elements.length);
@@ -135,7 +122,6 @@ public class MyArrayList<E> implements MyList<E> {
                 size--;
                 return true;
             } else if (i == elements.length - 1) {
-                System.out.println("The element not found");
                 return false;
             }
         }
@@ -215,22 +201,14 @@ public class MyArrayList<E> implements MyList<E> {
 
     @Override
     public boolean contains(Object o) {
-        if (o == null) {
-            for (int i = 0; i < elements.length; i++) {
+
+        for (int i = 0; i < elements.length; i++) {
                 if (o.equals(elements[i])) {
                     return true;
                 }
             }
-        } else {
-            for (int i = 0; i < elements.length; i++) {
-                if (o.equals(elements[i])) {
-                    return true;
-                }
-            }
-        }
         return false;
     }
-
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
@@ -241,9 +219,12 @@ public class MyArrayList<E> implements MyList<E> {
     }
 
     private boolean upLengthOfArray() {
-        E[] tempArray = elements;
-        elements = (E[]) new Object[tempArray.length * 3 / 2 + 1];
-        System.arraycopy(tempArray, 0, elements, 0, tempArray.length);
-        return true;
+        if (size == elements.length) {
+            E[] tempArray = elements;
+            elements = (E[]) new Object[tempArray.length * 2];
+            System.arraycopy(tempArray, 0, elements, 0, tempArray.length);
+            return true;
+        }
+        return false;
     }
 }
