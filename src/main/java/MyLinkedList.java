@@ -13,7 +13,7 @@
 // V remove(int index)
 // remove(Object o)
 // removeAll(Collection<?> c)
-// clear()
+// V clear()
 // V size()
 // V iterator()
 
@@ -30,18 +30,25 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
     }
 
     @Override
+    public void add(int index, E element) {
+        if (index == size) {
+            addLast(element);
+        } else {
+            linkBefore(element, findNodeByIndex(index));
+        }
+    }
+
+    @Override
     public boolean add(E e) {
         addLast(e);
         return true;
     }
 
-    @Override
-    public void add(int index, E element) {
-            if (index == size) {
-                addLast(element);
-            } else {
-                linkBefore(element, findNodeByIndex(index));
-            }
+    public boolean addAll(int index, Collection<? extends E> c) {
+        for (E elem : c) {
+            add(index++, elem);
+        }
+        return true;
     }
 
     @Override
@@ -49,53 +56,91 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
         return addAll(size, c);
     }
 
-    public boolean addAll(int index, Collection<? extends E> c) {
-                for (E elem : c) {
-                    add(index++, elem);}
-                return true;
-            }
-
     @Override
     public E remove(int index) {
-            Node<E> removableElement = findNodeByIndex(index);
-            E e = removableElement.element;
-            Node<E> next = removableElement.next;
-            Node<E> prev = removableElement.prev;       //first                                        last
-            if (prev == null) {                 //[null<-element0->next][prev<-element1->next][prev<-element1->null]
-                first = next;                   //[null<-element1->next][prev<-element1->null]
-            } else {
-                prev.next = next;               //[null<-element1->next][prev<-element1->next][prev<-element1->null]
-                removableElement.prev = null;
-            }
-            if (next == null) {
-                last = prev;
-            } else {
-                next.prev = prev;
-                removableElement.next = null;
-            }
+        Node<E> removableElement = findNodeByIndex(index);
+        E e = removableElement.element;
+        Node<E> next = removableElement.next;
+        Node<E> prev = removableElement.prev;
+        if (prev == null) {
+            first = next;
+        } else {
+            prev.next = next;
+            removableElement.prev = null;
+        }
+        if (next == null) {
+            last = prev;
+        } else {
+            next.prev = prev;
+            removableElement.next = null;
+        }
 
-            removableElement.element = null;
-            size--;
-            return e;
+        removableElement.element = null;
+        size--;
+        return e;
     }
 
     @Override
     public boolean remove(Object o) {
+        Node<E> x = first;
+        while (x != null) {
+            if (o.equals(x.element)) {
+                E element = x.element;
+                Node<E> next = x.next;
+                Node<E> prev = x.prev;
+                if (prev == null) {
+                    first = next;
+                } else {
+                    prev.next = next;
+                    x.prev = null;
+                }
+
+                if (next == null) {
+                    last = prev;
+                } else {
+                    next.prev = prev;
+                    x.next = null;
+                }
+                x.element = null;
+                size--;
+                return true;
+            }
+            x = x.next;
+
+        }
         return false;
     }
 
     @Override
     public boolean removeAll(Collection collection) {
+
         return false;
     }
 
     @Override
     public void clear() {
-        for (int i = 0; i<size;i++){
-            findNodeByIndex(i).prev = null;
-            findNodeByIndex(i).next = null;
-            findNodeByIndex(i).element = null;
+        Node<E> node = first;
+        while (node != null) {
+            Node<E> temp = node;
+            node = node.next;
+            temp.element = null;
+            temp.next = null;
         }
+        first = null;
+        last = null;
+        size = 0;
+    }
+
+    private void addLast(E e) {
+        Node<E> oldLast = last;
+        Node<E> newNode = new Node<>(oldLast, e, null);
+        last = newNode;
+        if (oldLast == null) {
+            first = newNode;
+        } else {
+            oldLast.next = newNode;
+        }
+        size++;
     }
 
     @Override
@@ -128,30 +173,10 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
         }
         return node;
     }
-//
-//    private void addFirst(E e) {
-//        Node<E> firstTemp = first;
-//        Node<E> newNode = new Node<>(null, e, firstTemp);
-//        first = newNode;
-//        if (firstTemp == null) {
-//            last = newNode;
-//        } else {
-//            firstTemp.prev = newNode;
-//        }
-//        size++;
-//    }
 
-    private void addLast(E e) {
-        Node<E> oldLast = last;
-        Node<E> newNode = new Node<>(oldLast, e, null);
-        last = newNode;
-        if (oldLast == null) {
-            first = newNode;
-        }
-        else {
-            oldLast.next = newNode;
-        }
-        size++;
+    @Override
+    public boolean retainAll(Collection collection) {
+        return false;
     }
 
     private void linkBefore(E e, Node<E> succ) {
@@ -164,11 +189,6 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
             pred.next = newNode;
         }
         size++;
-    }
-
-    @Override
-    public boolean retainAll(Collection collection) {
-        return false;
     }
 
     @Override
