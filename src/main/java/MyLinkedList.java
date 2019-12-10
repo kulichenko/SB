@@ -37,15 +37,11 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public void add(int index, E element) {
-        if (index >= 0 && index <= this.size) {
             if (index == size) {
                 addLast(element);
             } else {
-                linkBefore(element, node(index));
+                linkBefore(element, findNodeByIndex(index));
             }
-        } else {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
     }
 
     @Override
@@ -54,54 +50,21 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
     }
 
     public boolean addAll(int index, Collection<? extends E> c) {
-        if (index >= 0 && index <= size) {
-            int sizeOfCollection = c.size();
-            if (sizeOfCollection == 0) {
-                return false;
-            } else {
-                Node<E> leftNode;
-                Node<E> rightNode;
-                if (index == size) {
-                    rightNode = null;
-                    leftNode = last;
-                } else {
-                    rightNode = node(index);
-                    leftNode = rightNode.prev;
-                }
                 for (E elem : c) {
-                    Node<E> newNode = new Node<>(leftNode, elem, null);
-                    if (leftNode == null) {
-                        first = newNode;
-                    } else {
-                        leftNode.next = newNode;
-                    }
-                    leftNode = newNode;
-                }
-                if (rightNode == null) {
-                    last = leftNode;
-                } else {
-                    leftNode.next = rightNode;
-                    rightNode.prev = leftNode;
-                }
-                size += sizeOfCollection;
+                    add(index++, elem);}
                 return true;
             }
-        } else {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-    }
 
     @Override
     public E remove(int index) {
-        if (index >= 0 && index <= size) {
-            Node<E> removableElement = node(index);
+            Node<E> removableElement = findNodeByIndex(index);
             E e = removableElement.element;
             Node<E> next = removableElement.next;
-            Node<E> prev = removableElement.prev;
-            if (prev == null) {
-                first = next;
+            Node<E> prev = removableElement.prev;       //first                                        last
+            if (prev == null) {                 //[null<-element0->next][prev<-element1->next][prev<-element1->null]
+                first = next;                   //[null<-element1->next][prev<-element1->null]
             } else {
-                prev.next = next;
+                prev.next = next;               //[null<-element1->next][prev<-element1->next][prev<-element1->null]
                 removableElement.prev = null;
             }
             if (next == null) {
@@ -114,9 +77,6 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
             removableElement.element = null;
             size--;
             return e;
-        } else {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
     }
 
     @Override
@@ -131,7 +91,11 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
 
     @Override
     public void clear() {
-
+        for (int i = 0; i<size;i++){
+            findNodeByIndex(i).prev = null;
+            findNodeByIndex(i).next = null;
+            findNodeByIndex(i).element = null;
+        }
     }
 
     @Override
@@ -151,52 +115,46 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
 
             @Override
             public E next() {
-                return get(index++);
+                return findNodeByIndex(index++).element;
             }
         };
     }
 
-    public E get(int index) {
-        if (index >= 0 && index < size) {
-            return node(index).element;
-        } else {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-    }
 
-    Node<E> node(int index) {
+    Node<E> findNodeByIndex(int index) {
         Node<E> node = first;
         for (int i = 0; i < index; i++) {
             node = node.next;
         }
         return node;
     }
+//
+//    private void addFirst(E e) {
+//        Node<E> firstTemp = first;
+//        Node<E> newNode = new Node<>(null, e, firstTemp);
+//        first = newNode;
+//        if (firstTemp == null) {
+//            last = newNode;
+//        } else {
+//            firstTemp.prev = newNode;
+//        }
+//        size++;
+//    }
 
-    private void addFirst(E e) {
-        Node<E> firstTemp = first;
-        Node<E> newNode = new Node<>(null, e, firstTemp);
-        first = newNode;
-        if (firstTemp == null) {
-            last = newNode;
-        } else {
-            firstTemp.prev = newNode;
-        }
-        size++;
-    }
-
-    void addLast(E e) {
+    private void addLast(E e) {
         Node<E> oldLast = last;
         Node<E> newNode = new Node<>(oldLast, e, null);
         last = newNode;
         if (oldLast == null) {
             first = newNode;
-        } else {
+        }
+        else {
             oldLast.next = newNode;
         }
         size++;
     }
 
-    void linkBefore(E e, Node<E> succ) {
+    private void linkBefore(E e, Node<E> succ) {
         Node<E> pred = succ.prev;
         Node<E> newNode = new Node<>(pred, e, succ);
         succ.prev = newNode;
