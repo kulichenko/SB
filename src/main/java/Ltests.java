@@ -5,6 +5,8 @@ public class Ltests {
         integers1.add("1");
         integers1.add("2");
         integers1.add("5");
+        integers1.add("6");
+        integers1.add("12");
         System.out.println();
         System.out.println("size: " + integers1.size());
         for (String integer : integers1) {
@@ -18,6 +20,8 @@ public class Ltests {
         integers2.add("1");
         integers2.add("8");
         integers2.add("8");
+        integers2.add("11");
+        integers2.add("15");
         integers2.removeAll(integers1);
         System.out.println();
         System.out.println("size: " + integers2.size());

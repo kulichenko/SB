@@ -20,6 +20,7 @@
 import java.util.Collection;
 import java.util.Iterator;
 
+
 public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
     private int size;
     private Node<E> first;
@@ -27,6 +28,37 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
 
     public MyLinkedList() {
         size = 0;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        Node<E> node = first;
+        while (node != null) {
+            if (o.equals(node.element)) {
+                E element = node.element;
+                Node<E> next = node.next;
+                Node<E> prev = node.prev;
+                if (prev == null) {
+                    first = next;
+                } else {
+                    prev.next = next;
+                    node.prev = null;
+                }
+
+                if (next == null) {
+                    last = prev;
+                } else {
+                    next.prev = prev;
+                    node.next = null;
+                }
+                node.element = null;
+                size--;
+                return true;
+            }
+            node = node.next;
+
+        }
+        return false;
     }
 
     @Override
@@ -81,40 +113,23 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
     }
 
     @Override
-    public boolean remove(Object o) {
-        Node<E> x = first;
-        while (x != null) {
-            if (o.equals(x.element)) {
-                E element = x.element;
-                Node<E> next = x.next;
-                Node<E> prev = x.prev;
-                if (prev == null) {
-                    first = next;
-                } else {
-                    prev.next = next;
-                    x.prev = null;
-                }
-
-                if (next == null) {
-                    last = prev;
-                } else {
-                    next.prev = prev;
-                    x.next = null;
-                }
-                x.element = null;
-                size--;
-                return true;
-            }
-            x = x.next;
-
+    public boolean removeAll(Collection collection) {
+        for (Object o : collection) {
+            while (remove(o)) ;
         }
-        return false;
+        return true;
     }
 
-    @Override
-    public boolean removeAll(Collection collection) {
-
-        return false;
+    private void addLast(E e) {
+        Node<E> temp = last;
+        Node<E> newNode = new Node<>(temp, e, null);
+        last = newNode;
+        if (temp == null) {
+            first = newNode;
+        } else {
+            temp.next = newNode;
+        }
+        size++;
     }
 
     @Override
@@ -131,16 +146,17 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
         size = 0;
     }
 
-    private void addLast(E e) {
-        Node<E> oldLast = last;
-        Node<E> newNode = new Node<>(oldLast, e, null);
-        last = newNode;
-        if (oldLast == null) {
-            first = newNode;
-        } else {
-            oldLast.next = newNode;
+    private class Node<E> {
+
+        Node<E> prev;
+        E element;
+        Node<E> next;
+
+        Node(Node<E> prev, E element, Node<E> next) {
+            this.prev = prev;
+            this.element = element;
+            this.next = next;
         }
-        size++;
     }
 
     @Override
@@ -221,18 +237,5 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
     @Override
     public boolean containsAll(Collection collection) {
         return false;
-    }
-
-    private class Node<E> {
-
-        Node<E> prev;
-        E element;
-        Node<E> next;
-
-        Node(Node<E> prev, E element, Node<E> next) {
-            this.prev = prev;
-            this.element = element;
-            this.next = next;
-        }
     }
 }
