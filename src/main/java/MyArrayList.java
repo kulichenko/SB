@@ -19,7 +19,6 @@
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Objects;
 
 /**
  * Myself ArrayList implementation
@@ -186,7 +185,7 @@ public class MyArrayList<E> implements MyList<E> {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return elements.length == 0;
     }
 
     @Override
