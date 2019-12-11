@@ -38,7 +38,6 @@ class MyArrayListTest {
         MyList<Character> characters2 = new MyArrayList<>();
         for (char a = 'a'; a < 'c'; a++) {
             characters1.add(a);
-
         }
 
         for (char c = 'c'; c < 'f'; c++) {
