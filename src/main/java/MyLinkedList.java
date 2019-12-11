@@ -165,6 +165,11 @@ public class MyLinkedList<E> implements MyList<E>, Iterable<E> {
     }
 
     @Override
+    public E get(int index) {
+        return findNodeByIndex(index).element;
+    }
+
+    @Override
     public Iterator<E> iterator() {
         return new Iterator<E>() {
             int index = 0;

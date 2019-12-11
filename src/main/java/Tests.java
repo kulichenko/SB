@@ -10,6 +10,7 @@ public class Tests {
         integers1.add(3);
         integers1.add(4);
         integers1.add(5);
+        System.out.println(integers1.get(2));
         System.out.println("size: " + integers1.size());
         System.out.println("integers1: " + integers1);
         integers1.remove(3);

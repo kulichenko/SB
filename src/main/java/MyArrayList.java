@@ -19,6 +19,7 @@
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Myself ArrayList implementation
@@ -48,7 +49,7 @@ public class MyArrayList<E> implements MyList<E> {
      */
     @Override
     public void add(int index, E element) {
-            upLengthOfArray();
+        upLengthOfArray();
         E[] tempArray1 = Arrays.copyOf(elements, index);
         E[] tempArray2 = Arrays.copyOfRange(elements, index, size);
         elements[index] = element;
@@ -65,7 +66,7 @@ public class MyArrayList<E> implements MyList<E> {
     @Override
     public boolean addAll(Collection<? extends E> collection) {
         for (E c : collection) {
-                upLengthOfArray();
+            upLengthOfArray();
             elements[size++] = c;
         }
         return true;
@@ -79,7 +80,7 @@ public class MyArrayList<E> implements MyList<E> {
         E[] tempArray1 = Arrays.copyOf(elements, index);
         E[] tempArray2 = Arrays.copyOfRange(elements, index, size);
         for (E c : collection) {
-                upLengthOfArray();
+            upLengthOfArray();
             elements[index] = c;
             System.arraycopy(tempArray1, 0, elements, 0, tempArray1.length);
             System.arraycopy(tempArray2, 0, elements, index + 1, tempArray2.length);
@@ -174,6 +175,10 @@ public class MyArrayList<E> implements MyList<E> {
         return size;
     }
 
+    public E get(int index) {
+        return elements[index];
+    }
+
     @Override
     public boolean retainAll(Collection<?> collection) {
         return false;
@@ -203,12 +208,13 @@ public class MyArrayList<E> implements MyList<E> {
     public boolean contains(Object o) {
 
         for (int i = 0; i < elements.length; i++) {
-                if (o.equals(elements[i])) {
-                    return true;
-                }
+            if (o.equals(elements[i])) {
+                return true;
             }
+        }
         return false;
     }
+
     public String toString() {
 
         StringBuilder sb = new StringBuilder();

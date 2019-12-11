@@ -1,5 +1,9 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Ltests {
     public static void main(String[] args) {
+
         MyList<String> integers1 = new MyLinkedList<>();
         integers1.add("8");
         integers1.add("1");
@@ -7,6 +11,7 @@ public class Ltests {
         integers1.add("5");
         integers1.add("6");
         integers1.add("12");
+        System.out.println(integers1.get(2));
         System.out.println();
         System.out.println("size: " + integers1.size());
         for (String integer : integers1) {
