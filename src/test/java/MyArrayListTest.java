@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test;
 
-import java.util.Iterator;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -112,17 +112,17 @@ class MyArrayListTest {
 
     @Test
     void iteratorTest() {
-        MyList<Integer> list = new MyLinkedList<>();
+        MyList<Integer> list = new MyArrayList<>();
         assertFalse(list.iterator().hasNext());
         list.add(1);
         assertTrue(list.iterator().hasNext());
         for (int i = 0; i < 10; i++) {
             list.add(i);
         }
-        Iterator<Integer> iter = list.iterator();
+        Iterator<Integer> it = list.iterator();
         int counter = 0;
-        while (iter.hasNext()) {
-            iter.next();
+        while (it.hasNext()) {
+            it.next();
             counter++;
         }
         assertEquals(11, counter);
